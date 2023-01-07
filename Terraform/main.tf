@@ -76,7 +76,7 @@ output "synapse_sql_administrator_login_password" {
 }
 
 output "synapse_analytics_workspace_name" {
-  value = "pocsynapseanalytics-${random_string.suffix.id}"
+  value = "devsynapseanalytics-${random_string.suffix.id}"
 }
 
 output "synapse_analytics_workspace_resource_group" {
@@ -84,7 +84,7 @@ output "synapse_analytics_workspace_resource_group" {
 }
 
 output "datalake_name" {
-  value = "pocsynapseadls${random_string.suffix.id}"
+  value = "devsynapseadls${random_string.suffix.id}"
 }
 
 output "datalake_key" {
@@ -167,7 +167,7 @@ resource "azurerm_resource_group" "resource_group" {
   location = var.azure_region
 
   tags = {
-    Environment = "PoC"
+    Environment = "DEV"
     Application = "Azure Synapse Analytics"
     Purpose     = "Azure Synapse Analytics Proof of Concept"
   }
@@ -185,7 +185,7 @@ resource "azurerm_resource_group" "resource_group" {
 //   Azure: https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction
 //   Terraform: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/storage_account
 resource "azurerm_storage_account" "datalake" {
-  name                     = "pocsynapseadls${random_string.suffix.id}"
+  name                     = "devsynapseadls${random_string.suffix.id}"
   resource_group_name      = var.resource_group_name
   location                 = var.azure_region
   account_tier             = "Standard"
@@ -259,7 +259,7 @@ resource "azurerm_monitor_diagnostic_setting" "adlsdiagnostics" {
 //   Terraform: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint
 resource "azurerm_private_endpoint" "adlspe-blob" {
   count               = var.enable_private_endpoints == true ? 1 : 0
-  name                = "pocsynapsestorage-blob-endpoint"
+  name                = "devsynapsestorage-blob-endpoint"
   resource_group_name = var.resource_group_name
   location            = var.azure_region
   subnet_id           = "${data.azurerm_resources.private_endpoint_virtual_network.resources[0].id}/subnets/${var.private_endpoint_virtual_network_subnet}"
@@ -270,7 +270,7 @@ resource "azurerm_private_endpoint" "adlspe-blob" {
   }
 
   private_service_connection {
-    name                           = "pocsynapsestorage-blob-privateserviceconnection"
+    name                           = "devsynapsestorage-blob-privateserviceconnection"
     private_connection_resource_id = azurerm_storage_account.datalake.id
     subresource_names              = [ "blob" ]
     is_manual_connection           = false
@@ -284,7 +284,7 @@ resource "azurerm_private_endpoint" "adlspe-blob" {
 //   Terraform: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint
 resource "azurerm_private_endpoint" "adlspe-dfs" {
   count               = var.enable_private_endpoints == true ? 1 : 0
-  name                = "pocsynapsestorage-dfs-endpoint"
+  name                = "devsynapsestorage-dfs-endpoint"
   resource_group_name = var.resource_group_name
   location            = var.azure_region
   subnet_id           = "${data.azurerm_resources.private_endpoint_virtual_network.resources[0].id}/subnets/${var.private_endpoint_virtual_network_subnet}"
@@ -295,7 +295,7 @@ resource "azurerm_private_endpoint" "adlspe-dfs" {
   }
 
   private_service_connection {
-    name                           = "pocsynapsestorage-dfs-privateserviceconnection"
+    name                           = "devsynapsestorage-dfs-privateserviceconnection"
     private_connection_resource_id = azurerm_storage_account.datalake.id
     subresource_names              = [ "dfs" ]
     is_manual_connection           = false
@@ -333,7 +333,7 @@ resource "azurerm_storage_account_network_rules" "firewall" {
 //   Azure: https://docs.microsoft.com/en-us/azure/synapse-analytics/overview-what-is
 //   Terraform: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/synapse_workspace
 resource "azurerm_synapse_workspace" "synapsews" {
-  name                                 = "pocsynapseanalytics-${random_string.suffix.id}"
+  name                                 = "devsynapseanalytics-${random_string.suffix.id}"
   resource_group_name                  = var.resource_group_name
   location                             = var.azure_region
   storage_data_lake_gen2_filesystem_id = azurerm_storage_data_lake_gen2_filesystem.datalake-config.id
@@ -478,7 +478,7 @@ resource "azurerm_monitor_diagnostic_setting" "synapse-dedicated-sql-pool-diagno
 //   Terraform: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint
 resource "azurerm_private_endpoint" "synapse-sql" {
   count               = var.enable_private_endpoints == true ? 1 : 0
-  name                = "pocsynapseanalytics-sql-endpoint"
+  name                = "devsynapseanalytics-sql-endpoint"
   resource_group_name = var.resource_group_name
   location            = var.azure_region
   subnet_id           = "${data.azurerm_resources.private_endpoint_virtual_network.resources[0].id}/subnets/${var.private_endpoint_virtual_network_subnet}"
@@ -489,7 +489,7 @@ resource "azurerm_private_endpoint" "synapse-sql" {
   }
 
   private_service_connection {
-    name                           = "pocsynapseanalytics-sql-privateserviceconnection"
+    name                           = "devsynapseanalytics-sql-privateserviceconnection"
     private_connection_resource_id = azurerm_synapse_workspace.synapsews.id
     subresource_names              = [ "Sql" ]
     is_manual_connection           = false
@@ -501,7 +501,7 @@ resource "azurerm_private_endpoint" "synapse-sql" {
 //   Terraform: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint
 resource "azurerm_private_endpoint" "synapse-sqlondemand" {
   count               = var.enable_private_endpoints == true ? 1 : 0
-  name                = "pocsynapseanalytics-sqlondemand-endpoint"
+  name                = "devsynapseanalytics-sqlondemand-endpoint"
   resource_group_name = var.resource_group_name
   location            = var.azure_region
   subnet_id           = "${data.azurerm_resources.private_endpoint_virtual_network.resources[0].id}/subnets/${var.private_endpoint_virtual_network_subnet}"
@@ -512,7 +512,7 @@ resource "azurerm_private_endpoint" "synapse-sqlondemand" {
   }
 
   private_service_connection {
-    name                           = "pocsynapseanalytics-sqlondemand-privateserviceconnection"
+    name                           = "devsynapseanalytics-sqlondemand-privateserviceconnection"
     private_connection_resource_id = azurerm_synapse_workspace.synapsews.id
     subresource_names              = [ "SqlOnDemand" ]
     is_manual_connection           = false
@@ -524,7 +524,7 @@ resource "azurerm_private_endpoint" "synapse-sqlondemand" {
 //   Terraform: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint
 resource "azurerm_private_endpoint" "synapse-dev" {
   count               = var.enable_private_endpoints == true ? 1 : 0
-  name                = "pocsynapseanalytics-dev-endpoint"
+  name                = "devsynapseanalytics-dev-endpoint"
   resource_group_name = var.resource_group_name
   location            = var.azure_region
   subnet_id           = "${data.azurerm_resources.private_endpoint_virtual_network.resources[0].id}/subnets/${var.private_endpoint_virtual_network_subnet}"
@@ -535,7 +535,7 @@ resource "azurerm_private_endpoint" "synapse-dev" {
   }
 
   private_service_connection {
-    name                           = "pocsynapseanalytics-dev-privateserviceconnection"
+    name                           = "devsynapseanalytics-dev-privateserviceconnection"
     private_connection_resource_id = azurerm_synapse_workspace.synapsews.id
     subresource_names              = [ "Dev" ]
     is_manual_connection           = false
@@ -554,7 +554,7 @@ resource "azurerm_private_endpoint" "synapse-dev" {
 //   Azure: https://docs.microsoft.com/en-us/azure/azure-monitor/platform/data-platform-logs
 //   Terraform: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/log_analytics_workspace
 resource "azurerm_log_analytics_workspace" "loganalytics" {
-  name                = "poc-synapse-analytics-loganalytics-${random_string.suffix.id}"
+  name                = "dev-synapse-analytics-loganalytics-${random_string.suffix.id}"
   resource_group_name = var.resource_group_name
   location            = var.azure_region
   sku                 = "PerGB2018"

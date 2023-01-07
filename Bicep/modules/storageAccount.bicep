@@ -22,7 +22,7 @@ param private_endpoint_private_dns_zone_resource_group string
 //   Azure: https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction
 //   Bicep: https://docs.microsoft.com/en-us/azure/templates/microsoft.storage/storageaccounts
 resource synapseStorageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
-  name: 'pocsynapseadls${suffix}'
+  name: 'devsynapseadls${suffix}'
   location: azure_region
   kind: 'StorageV2'
   sku: {
@@ -139,7 +139,7 @@ resource existingVirtualNetworkSubnet 'Microsoft.Network/virtualNetworks/subnets
 //   Azure: https://docs.microsoft.com/en-us/azure/storage/common/storage-private-endpoints
 //   Bicep: https://docs.microsoft.com/en-us/azure/templates/microsoft.network/privateendpoints
 resource synapseStorageAccountBlobPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-03-01' = if (enable_private_endpoints) {
-  name: 'pocsynapsestorage-blob-endpoint'
+  name: 'devsynapsestorage-blob-endpoint'
   location: azure_region
   properties: {
     subnet: {
@@ -147,7 +147,7 @@ resource synapseStorageAccountBlobPrivateEndpoint 'Microsoft.Network/privateEndp
     }
     privateLinkServiceConnections: [
       {
-        name: 'pocsynapsestorage-blob-privateserviceconnection'
+        name: 'devsynapsestorage-blob-privateserviceconnection'
         properties: {
           privateLinkServiceId: synapseStorageAccount.id
           groupIds: [
@@ -163,7 +163,7 @@ resource synapseStorageAccountBlobPrivateEndpoint 'Microsoft.Network/privateEndp
 //   Azure: https://docs.microsoft.com/en-us/azure/storage/common/storage-private-endpoints
 //   Bicep: https://docs.microsoft.com/en-us/azure/templates/microsoft.network/privateendpoints
 resource synapseStorageAccountDfsPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-03-01' = if (enable_private_endpoints) {
-  name: 'pocsynapsestorage-dfs-endpoint'
+  name: 'devsynapsestorage-dfs-endpoint'
   location: azure_region
   properties: {
     subnet: {
@@ -171,7 +171,7 @@ resource synapseStorageAccountDfsPrivateEndpoint 'Microsoft.Network/privateEndpo
     }
     privateLinkServiceConnections: [
       {
-        name: 'pocsynapsestorage-dfs-privateserviceconnection'
+        name: 'devsynapsestorage-dfs-privateserviceconnection'
         properties: {
           privateLinkServiceId: synapseStorageAccount.id
           groupIds: [

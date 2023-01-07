@@ -25,7 +25,7 @@ param private_endpoint_private_dns_zone_resource_group string
 //   Azure: https://docs.microsoft.com/en-us/azure/synapse-analytics/overview-what-is
 //   Bicep: https://docs.microsoft.com/en-us/azure/templates/microsoft.synapse/workspaces
 resource synapseWorkspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
-  name: 'pocsynapseanalytics-${suffix}'
+  name: 'devsynapseanalytics-${suffix}'
   location: azure_region
   identity: {
     type: 'SystemAssigned'
@@ -45,7 +45,7 @@ resource synapseWorkspace 'Microsoft.Synapse/workspaces@2021-06-01' = {
 
 // Reference to the Storage Account we created
 resource synapseStorageAccount 'Microsoft.Storage/storageAccounts@2019-06-01' existing = {
-  name: 'pocsynapseadls${suffix}'
+  name: 'devsynapseadls${suffix}'
 }
 
 // Azure Data Lake Storage Gen2 Permissions: Give the Synapse Analytics Workspace Managed Identity permissions to Azure Data Lake Storage Gen2
@@ -222,7 +222,7 @@ resource existingVirtualNetworkSubnet 'Microsoft.Network/virtualNetworks/subnets
 //   Azure: https://docs.microsoft.com/en-us/azure/synapse-analytics/security/how-to-connect-to-workspace-with-private-links
 //   Bicep: https://docs.microsoft.com/en-us/azure/templates/microsoft.network/privateendpoints
 resource synapseWorkspaceSqlPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-03-01' = if (enable_private_endpoints) {
-  name: 'pocsynapseanalytics-sql-endpoint'
+  name: 'devsynapseanalytics-sql-endpoint'
   location: azure_region
   properties: {
     subnet: {
@@ -230,7 +230,7 @@ resource synapseWorkspaceSqlPrivateEndpoint 'Microsoft.Network/privateEndpoints@
     }
     privateLinkServiceConnections: [
       {
-        name: 'pocsynapseanalytics-sql-privateserviceconnection'
+        name: 'devsynapseanalytics-sql-privateserviceconnection'
         properties: {
           privateLinkServiceId: synapseWorkspace.id
           groupIds: [
@@ -246,7 +246,7 @@ resource synapseWorkspaceSqlPrivateEndpoint 'Microsoft.Network/privateEndpoints@
 //   Azure: https://docs.microsoft.com/en-us/azure/synapse-analytics/security/how-to-connect-to-workspace-with-private-links
 //   Bicep: https://docs.microsoft.com/en-us/azure/templates/microsoft.network/privateendpoints
 resource synapseWorkspaceServerlessSqlPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-03-01' = if (enable_private_endpoints) {
-  name: 'pocsynapseanalytics-sqlondemand-endpoint'
+  name: 'devsynapseanalytics-sqlondemand-endpoint'
   location: azure_region
   properties: {
     subnet: {
@@ -254,7 +254,7 @@ resource synapseWorkspaceServerlessSqlPrivateEndpoint 'Microsoft.Network/private
     }
     privateLinkServiceConnections: [
       {
-        name: 'pocsynapseanalytics-sqlondemand-privateserviceconnection'
+        name: 'devsynapseanalytics-sqlondemand-privateserviceconnection'
         properties: {
           privateLinkServiceId: synapseWorkspace.id
           groupIds: [
@@ -270,7 +270,7 @@ resource synapseWorkspaceServerlessSqlPrivateEndpoint 'Microsoft.Network/private
 //   Azure: https://docs.microsoft.com/en-us/azure/synapse-analytics/security/how-to-connect-to-workspace-with-private-links
 //   Bicep: https://docs.microsoft.com/en-us/azure/templates/microsoft.network/privateendpoints
 resource synapseWorkspaceDevPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-03-01' = if (enable_private_endpoints) {
-  name: 'pocsynapseanalytics-dev-endpoint'
+  name: 'devsynapseanalytics-dev-endpoint'
   location: azure_region
   properties: {
     subnet: {
@@ -278,7 +278,7 @@ resource synapseWorkspaceDevPrivateEndpoint 'Microsoft.Network/privateEndpoints@
     }
     privateLinkServiceConnections: [
       {
-        name: 'pocsynapseanalytics-dev-privateserviceconnection'
+        name: 'devsynapseanalytics-dev-privateserviceconnection'
         properties: {
           privateLinkServiceId: synapseWorkspace.id
           groupIds: [

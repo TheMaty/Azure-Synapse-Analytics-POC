@@ -69,9 +69,9 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-01-01' = {
   name: resource_group_name
   location: azure_region
   tags: {
-    Environment: 'PoC'
+    Environment: 'DEV'
     Application: 'Azure Synapse Analytics'
-    Purpose: 'Azure Synapse Analytics Proof of Concept'
+    Purpose: 'Azure Synapse Analytics for Intelligent Energy Organization'
   }
 }
 
